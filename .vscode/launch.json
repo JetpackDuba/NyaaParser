@@ -1,0 +1,42 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'anime_downloader_rs'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=anime_downloader_rs",
+                    "--package=anime_downloader_rs"
+                ],
+                "filter": {
+                    "name": "anime_downloader_rs",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'anime_downloader_rs'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=anime_downloader_rs",
+                    "--package=anime_downloader_rs"
+                ],
+                "filter": {
+                    "name": "anime_downloader_rs",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}
