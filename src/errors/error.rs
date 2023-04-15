@@ -7,6 +7,8 @@ pub enum AppError {
     FileWriteError(io::Error),
     FileReadError(io::Error),
     ParseTorrentTitleError,
+    AnimeTitleNotMatching,
+    FansubNotMatching,
     ParseJsonError(serde_json::Error),
     SerializeError(serde_json::Error),
     GetNetworkData(reqwest::Error),
