@@ -98,7 +98,7 @@ fn download_anime_if_required(feed: &NyaaRss, config: &Vec<AnimeConfig>) -> Resu
                         }
                     }
                     Err(error) => {
-                        println!("{:#?}", error);
+                        println!("\"{}\" {:#?}", anime_torrent.title, error);
                     }
                 }
             }
