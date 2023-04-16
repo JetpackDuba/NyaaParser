@@ -36,6 +36,12 @@ pub fn torrent_episode_if_matches_anime_entry(
     let episode = get_episode(episode_and_metadata)?;
     let tags = get_metadata_tags(episode_and_metadata);
 
+    for keyword in &fansub_entry.keywords {
+        if !tags.contains(keyword) {
+            return Err(AppError::MissingTag);
+        }
+    }
+
     let torrent_metadata = TorrentMetadata { 
         episode,
         tags
@@ -103,6 +109,7 @@ fn get_metadata_tags(episode_and_metadata: &str) -> Vec<String> {
 
 #[cfg(test)]
 mod tests {
+
     use super::*;
 
     #[test]
@@ -130,7 +137,7 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_without_separator() -> Result<(), AppError>  {
+    fn test_torrent_episode_if_matches_anime_entry() -> Result<(), AppError>  {
         let anime_by_fansub = AnimeByFansub {
             name: "My title".to_string(),
             fansub: "FanSub".to_string(),
@@ -149,11 +156,11 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_with_separator() -> Result<(), AppError> {
+    fn test_torrent_episode_if_matches_anime_entry_with_separator() -> Result<(), AppError> {
         let anime_by_fansub = AnimeByFansub {
             name: "My title - Part 2".to_string(),
             fansub: "FanSub".to_string(),
-            keywords: vec!["[1080p][HEVC]".to_string()],
+            keywords: vec!["[1080p]".to_string(), "[HEVC]".to_string()],
         };
 
         let metadata = torrent_episode_if_matches_anime_entry(
@@ -165,6 +172,32 @@ mod tests {
         assert_eq!(metadata.episode, 2.0);
 
         return Ok(())
+    }
+
+    #[test]
+    fn test_torrent_episode_if_matches_anime_entry_with_no_matching_tag() {
+        let anime_by_fansub = AnimeByFansub {
+            name: "My title - Part 2".to_string(),
+            fansub: "FanSub".to_string(),
+            keywords: vec!["[1080p]".to_string(), "[HEVC]".to_string()],
+        };
+
+        let metadata = torrent_episode_if_matches_anime_entry(
+            "[FanSub] My title - Part 2 - 02 [720p][HEVC]",
+            &anime_by_fansub            
+        );
+        
+        match metadata {
+            Ok(_) => assert!(false, "Result is OK but should be Err"),
+            Err(error) => {
+                if !matches!(error, AppError::MissingTag) {
+                    assert!(false, "Different error than the expected MissingTag")
+                }
+            },
+        }
+
+        
+
     }
 }
 
